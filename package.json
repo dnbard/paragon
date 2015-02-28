@@ -1,13 +1,10 @@
 {
   "name": "Paragon",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "bump:patch": "npm version patch && git push",
-    "bump:minor": "npm version minor && git push",
-    "bump:major": "npm version major && git push"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
