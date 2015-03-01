@@ -1,20 +1,15 @@
 var NotImplementedError = require('./core/errors/notImplemented'),
-    package = require('./package.json'),
     REST = require('./core/rest'),
     usersMiddleware = require('./middleware/users'),
-    Operations = require('./enums/operations');
+    Operations = require('./enums/operations'),
+    healthController = require('./controllers/health');
 
 module.exports = function(app){
     app.get('/', (req, res, next) => {
         throw new NotImplementedError('GET /');
     });
 
-    app.get('/_health', (req, res, next) => {
-        res.send({
-            status: "OK",
-            version: package.version
-        });
-    });
+    app.get('/_health', healthController.default);
 
     REST.createRoute({
         route: '/api/users',
@@ -31,6 +26,11 @@ module.exports = function(app){
         app: app,
         select: { salt: false, password: false, __v: false, token: false }
     });
+
+    app.post('/login', (req, res, next) => {
+
+    });
+
 
     //Log all routing errors
     app.use((err, req, res, next) => {
