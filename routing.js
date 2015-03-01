@@ -1,5 +1,8 @@
 var NotImplementedError = require('./core/errors/notImplemented'),
-    package = require('./package.json');
+    package = require('./package.json'),
+    REST = require('./core/rest'),
+    usersHelper = require('./helpers/usersHelper'),
+    Operations = require('./enums/operations');
 
 module.exports = function(app){
     app.get('/', (req, res, next) => {
@@ -13,6 +16,21 @@ module.exports = function(app){
         });
     });
 
+    REST.createRoute({
+        route: '/api/users',
+        methods: ['post'],
+        model: require('./models/usersModel'),
+        app: app,
+        middleware: [ usersHelper.createToken, usersHelper.tranformPassword ]
+    });
+
+    REST.createRoute({
+        route: '/api/users/:_id',
+        methods: ['get', 'delete'],
+        model: require('./models/usersModel'),
+        app: app,
+        select: { salt: false, password: false, __v: false, token: false }
+    });
 
     //Log all routing errors
     app.use((err, req, res, next) => {
@@ -23,6 +41,6 @@ module.exports = function(app){
     //Send appropriate failure responses to the client
     app.use((err, req, res, next) => {
         res.status(err.status || 500)
-            .send({ error: err });
+            .send({ error: err.message });
     });
 }
