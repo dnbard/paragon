@@ -1,6 +1,6 @@
 var crypto = require('crypto'),
     uuid = require('node-uuid').v4,
-    Users = require('../models/usersModel');
+    UsersDirectory = require('../services/usersDirectory');
 
 function transformPassword(req, res, next){
     var password = req.body.password;
@@ -21,8 +21,7 @@ function createToken(req, res, next){
 function allowSameUser(req, res, next){
     //rely on auth.headers middleware
 
-    Users.findOne({ _id: req.params._id })
-        .exec()
+    UsersDirectory.get(req.params._id)
         .then(function(user){
             if (!user || !req.user || user.token !== req.user.token){
                 next({

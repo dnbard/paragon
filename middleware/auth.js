@@ -1,12 +1,9 @@
-var Users = require('../models/usersModel');
+var UsersDirectory = require('../services/usersDirectory');
 
 function auth(req, res, next){
     var authHeader = req.headers['authorization'];
 
-    //TODO: cache tokens
-    Users.findOne({ token: authHeader })
-        .lean()
-        .exec()
+    UsersDirectory.getByToken(authHeader)
         .then(function(user){
             if (!user){
                 return next({
