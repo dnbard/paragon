@@ -1,6 +1,7 @@
 var NotImplementedError = require('./core/errors/notImplemented'),
     REST = require('./core/rest'),
     usersMiddleware = require('./middleware/users'),
+    authMiddleware = require('./middleware/auth'),
     Operations = require('./enums/operations'),
     healthController = require('./controllers/health'),
     loginController = require('./controllers/login');
@@ -25,7 +26,8 @@ module.exports = function(app){
         methods: ['get', 'delete'],
         model: require('./models/usersModel'),
         app: app,
-        select: { salt: false, password: false, __v: false, token: false }
+        select: { salt: false, password: false, __v: false, token: false },
+        middleware: [ authMiddleware.header ]
     });
 
     app.post('/login', loginController.default);
