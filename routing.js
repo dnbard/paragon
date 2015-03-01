@@ -27,7 +27,7 @@ module.exports = function(app){
         model: require('./models/usersModel'),
         app: app,
         select: { salt: false, password: false, __v: false, token: false },
-        middleware: [ authMiddleware.header ]
+        middleware: [ authMiddleware.header, usersMiddleware.allowSameUser ]
     });
 
     app.post('/login', loginController.default);
