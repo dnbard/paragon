@@ -2,7 +2,8 @@ var NotImplementedError = require('./core/errors/notImplemented'),
     REST = require('./core/rest'),
     usersMiddleware = require('./middleware/users'),
     Operations = require('./enums/operations'),
-    healthController = require('./controllers/health');
+    healthController = require('./controllers/health'),
+    loginController = require('./controllers/login');
 
 module.exports = function(app){
     app.get('/', (req, res, next) => {
@@ -27,9 +28,7 @@ module.exports = function(app){
         select: { salt: false, password: false, __v: false, token: false }
     });
 
-    app.post('/login', (req, res, next) => {
-
-    });
+    app.post('/login', loginController.default);
 
 
     //Log all routing errors
