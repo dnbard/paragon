@@ -1,7 +1,7 @@
 var NotImplementedError = require('./core/errors/notImplemented'),
     package = require('./package.json'),
     REST = require('./core/rest'),
-    usersHelper = require('./helpers/usersHelper'),
+    usersMiddleware = require('./middleware/users'),
     Operations = require('./enums/operations');
 
 module.exports = function(app){
@@ -21,7 +21,7 @@ module.exports = function(app){
         methods: ['post'],
         model: require('./models/usersModel'),
         app: app,
-        middleware: [ usersHelper.createToken, usersHelper.tranformPassword ]
+        middleware: [ usersMiddleware.createToken, usersMiddleware.tranformPassword ]
     });
 
     REST.createRoute({
