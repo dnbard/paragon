@@ -1,6 +1,7 @@
 var NotImplementedError = require('./core/errors/notImplemented'),
     REST = require('./core/rest'),
     usersMiddleware = require('./middleware/users'),
+    heroesMiddleware = require('./middleware/heroes'),
     authMiddleware = require('./middleware/auth'),
     Operations = require('./enums/operations'),
     healthController = require('./controllers/health'),
@@ -14,7 +15,7 @@ module.exports = function(app){
     app.get('/_health', healthController.default);
 
     REST.createRoute({
-        route: '/api/users',
+        route: '/users',
         methods: ['post'],
         model: require('./models/usersModel'),
         app: app,
@@ -22,7 +23,7 @@ module.exports = function(app){
     });
 
     REST.createRoute({
-        route: '/api/users/:_id',
+        route: '/users/:_id',
         methods: ['get', 'delete'],
         model: require('./models/usersModel'),
         app: app,
@@ -32,6 +33,13 @@ module.exports = function(app){
 
     app.post('/login', loginController.default);
 
+    REST.createRoute({
+        route: '/heroes',
+        methods: ['post'],
+        model: require('./models/heroesModel'),
+        app: app,
+        middleware: [ authMiddleware.header, usersMiddleware.saveIdInBody, heroesMiddleware.onPostValidate ]
+    });
 
     //Log all routing errors
     app.use((err, req, res, next) => {
