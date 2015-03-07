@@ -19,7 +19,7 @@ function createToken(req, res, next){
 }
 
 function allowSameUser(req, res, next){
-    //rely on auth.headers middleware
+    //relay on auth.headers middleware
 
     UsersDirectory.get(req.params._id)
         .then(function(user){
@@ -34,6 +34,21 @@ function allowSameUser(req, res, next){
         });
 }
 
+function saveIdInBody(req, res, next){
+    //relay on auth.headers middleware
+
+    if (req.user && req.user._id){
+        req.body.userId = req.user._id;
+        return next();
+    } else {
+        return next({
+            status: 403,
+            message: 'Invalid token'
+        });
+    }
+}
+
 exports.tranformPassword = transformPassword;
 exports.createToken = createToken;
 exports.allowSameUser = allowSameUser;
+exports.saveIdInBody = saveIdInBody;
