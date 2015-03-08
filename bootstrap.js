@@ -4,7 +4,8 @@ function bootstrapDataInDatabase(model, data, field, id){
     var query = {};
     query[field] = id;
 
-    model.findOne(query)
+    return new Promise((resolve, reject) => {
+        model.findOne(query)
         .exec()
         .then((entity) => {
             var modified = false;
@@ -14,22 +15,34 @@ function bootstrapDataInDatabase(model, data, field, id){
                 entity = new model(data);
             }
 
-            entity.save();
+            entity.save((err) => {
+                if (err){
+                    return reject(err);
+                }
+
+                return resolve();
+            });
         });
+    });
 }
 
 exports.all = function(app){
     var Classes = require('./models/classesModel'),
-        Abilities = require('./models/abilitiesModel');
+        Abilities = require('./models/abilitiesModel'),
+        promises;
 
     function bootstrapClass(id, data){
-        bootstrapDataInDatabase(Classes, data, 'title', id);
+        return bootstrapDataInDatabase(Classes, data, 'title', id);
     }
 
     function bootstrapAbility(id, data){
-        bootstrapDataInDatabase(Abilities, data, 'title', id);
+        return bootstrapDataInDatabase(Abilities, data, 'title', id);
     }
 
-    _.each(require('./data/classes'), (classData) => bootstrapClass(classData.title, classData));
-    _.each(require('./data/abilities'), (abilityData) => bootstrapAbility(abilityData.title, abilityData));
+    var classPromises = _.map(require('./data/classes'), (classData) => bootstrapClass(classData.title, classData));
+    var abilityPromises = _.map(require('./data/abilities'), (abilityData) => bootstrapAbility(abilityData.title, abilityData));
+
+    promises = _.union(classPromises, abilityPromises);
+
+    return Promise.all(promises);
 }

@@ -12,20 +12,20 @@ var express = require('express'),
 
 
 mongoose.connect(config.mongodb);
-
 var db = mongoose.connection;
-
-classesDirectory.init(db);
-abilitiesDirectory.init(db);
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function(){
-    middlewares(app);
-    bootstrap.all(app);
-    routing(app);
+    bootstrap.all(app).then(function(){
+        middlewares(app);
+        routing(app);
 
-    var server = app.listen(config.port, function(){
-        var port = server.address().port;
-        console.log('Paragon app listening to %s port', port);
+        classesDirectory.init();
+        abilitiesDirectory.init();
+
+        var server = app.listen(config.port, function(){
+            var port = server.address().port;
+            console.log('Paragon app listening to %s port', port);
+        });
     });
 });

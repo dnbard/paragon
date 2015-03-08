@@ -10,10 +10,8 @@ exports.getByTitle = function(title){
 exports.init = function(db){
     var Classes = require('../models/classesModel');
 
-    db.once('open', () => {
-        Classes.find({})
-            .lean()
-            .exec()
-            .then(classes => classesDirectory = classes);
-    });
+    Classes.find({})
+        .lean()
+        .exec()
+        .then(classes => classesDirectory = classes);
 }
