@@ -1,12 +1,10 @@
 var mongoose = require('mongoose'),
     uuid = require('node-uuid').v4,
-    classSchema = new mongoose.Schema({
+    parameterSchema = require('./parameterSchema'),
+    classSchema = mongoose.Schema({
         _id: { type: String, unique: true, default: uuid },
         title: { type: String, required: true, index: true },
-        paramMods: [{
-            title: String,
-            value: Number
-        }],
+        paramMods: [ parameterSchema ],
         defaultAbilities: [ String ]
     }),
     classModel = mongoose.model('class', classSchema);

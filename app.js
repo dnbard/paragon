@@ -7,13 +7,16 @@ var express = require('express'),
     routing = require('./routing'),
     middlewares = require('./middlewares'),
     bootstrap = require('./bootstrap'),
-    classesDirectory = require('./services/classesDirectory');
+    classesDirectory = require('./services/classesDirectory'),
+    abilitiesDirectory = require('./services/abilitiesDirectory');
+
 
 mongoose.connect(config.mongodb);
 
 var db = mongoose.connection;
 
 classesDirectory.init(db);
+abilitiesDirectory.init(db);
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function(){

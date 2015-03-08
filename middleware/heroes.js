@@ -1,5 +1,6 @@
 var _ = require('lodash'),
-    classesDirectory = require('../services/classesDirectory');
+    classesDirectory = require('../services/classesDirectory'),
+    abilitiesDirectory = require('../services/abilitiesDirectory');
 
 function applyParam(hero, param){
     var selectedParam = _.find(hero.params, p => p.title === param.title);
@@ -11,6 +12,18 @@ function applyParam(hero, param){
             title: param.title,
             value: param.value
         });
+    }
+}
+
+function applyAbility(hero, abilityName){
+    var ability = abilitiesDirectory.getByTitle(abilityName);
+
+    if (!hero.abilities){
+        hero.abilities = [];
+    }
+
+    if (ability){
+        hero.abilities.push(ability);
     }
 }
 
@@ -28,6 +41,7 @@ exports.onPostValidate = function(req, res, next){
     var heroClass = classesDirectory.getByTitle(req.body.class);
 
     _.each(heroClass.paramMods, paramMod => applyParam(req.body, paramMod));
+    _.each(heroClass.defaultAbilities, ability => applyAbility(req.body, ability));
 
     next();
 }
